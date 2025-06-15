@@ -12,12 +12,12 @@ export const useToast = () => {
     const closeToast = useCallback(() => {
         setOpen(false);
     }, []);
-
+    // MUI реализует собственный таймаут, однако в других  случаях обязателен
     // useEffect(() => {
     //     if (open) {
     //         const timer = setTimeout(() => {
     //             setOpen(false);
-    //         }, 1000);
+    //         }, 2000);
     //
     //         return () => clearTimeout(timer);
     //     }

@@ -42,7 +42,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
                     onChange={onChange}
                     type={type}
                     label={label}
-                    inputRef={ref} // Вот сюда передаём ref
+                    inputRef={ref}
                     sx={{
                         backgroundColor: "#FAFAFA",
                         "&.Mui-focused .MuiOutlinedInput-notchedOutline": {

@@ -1,31 +1,28 @@
-import { Box, Typography } from "@mui/material";
+import React from "react";
 
-interface ResidueProps {
+interface ResidueProps extends React.HTMLAttributes<HTMLSpanElement> {
     acid: string;
     color?: string;
 }
 
-export const Residue = ({ acid, color }: ResidueProps) => {
+export const Residue = ({ acid, color, ...props }: ResidueProps) => {
+    const hasColor = Boolean(color);
+
+    const styles: React.CSSProperties = {
+        color: hasColor ? "#000" : "rgb(102, 102, 102)",
+        padding: "0.7rem",
+        backgroundColor: hasColor ? color : "transparent",
+        marginRight: "0.3rem",
+        marginBottom: "0.3rem",
+        borderRadius: "3px",
+        fontWeight: 600,
+        fontSize: "1.2rem",
+        border: "1px solid rgb(224, 224, 224)",
+    };
+
     return (
-        <Box
-            sx={{
-                border: "1px solid rgb(224, 224, 224)",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                background: color ?? "rgb(245, 245, 245)",
-                width: "2.4rem",
-                height: "2.4rem",
-            }}
-        >
-            <Typography
-                sx={{
-                    color: color ? "#000" : "rgb(102, 102, 102)",
-                    fontWeight: 600,
-                }}
-            >
-                {acid}
-            </Typography>
-        </Box>
+        <span style={styles} {...props}>
+            {acid}
+        </span>
     );
 };

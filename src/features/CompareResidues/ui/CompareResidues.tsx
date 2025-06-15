@@ -1,4 +1,4 @@
-import { Grid } from "@mui/material";
+import { Box } from "@mui/material";
 import { Residue } from "@/shared/ui/Residue";
 import { aminoColorMap } from "entities/AminoAcidSequence";
 import React, { useRef } from "react";
@@ -19,26 +19,27 @@ export const CompareResidues = ({ seq1, seq2 }: CompareResiduesProps) => {
 
     return (
         <>
-            <Grid
-                container
+            <Box
+                sx={{
+                    marginBottom: "1rem",
+                    userSelect: "text",
+                    wordBreak: "break-word",
+                    whiteSpace: "normal",
+                    lineHeight: "3rem",
+                }}
                 ref={containerRef}
                 data-testid="container"
-                sx={{ gap: "5px", marginBottom: "1rem" }}
             >
                 {seq2.split("").map((acid, index) => (
                     // использую индекс, так как последовательность неизменяема
-                    <Grid item key={index}>
-                        <Residue
-                            acid={acid}
-                            color={
-                                acid === seq1[index]
-                                    ? undefined
-                                    : aminoColorMap.get(acid)
-                            }
-                        />
-                    </Grid>
+                    <Residue
+                        acid={acid}
+                        color={
+                            acid === seq1[index] ? "" : aminoColorMap.get(acid)
+                        }
+                    />
                 ))}
-            </Grid>
+            </Box>
             <Toast open={open} message={message} onClose={closeToast} />
         </>
     );

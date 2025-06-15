@@ -19,6 +19,9 @@ declare module "@mui/material/styles" {
 }
 
 const theme = createTheme({
+    typography: {
+        fontFamily: "Roboto, Arial, sans-serif",
+    },
     palette: {
         custom: {
             greenGradient: "linear-gradient(45deg, #2E7D32 30%, #1565C0 90%)",

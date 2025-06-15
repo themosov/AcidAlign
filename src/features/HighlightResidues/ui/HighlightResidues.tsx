@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { Box, Grid } from "@mui/material";
+import { Box } from "@mui/material";
 import { Residue } from "@/shared/ui/Residue";
 import { aminoColorMap } from "entities/AminoAcidSequence";
 import { Toast } from "@/shared/ui/Toast";
@@ -19,38 +19,24 @@ export const HighlightResidues = ({ sequence }: HighlightResiduesProps) => {
     return (
         <>
             <Box
-                sx={{ position: "relative", marginBottom: "1rem" }}
+                sx={{
+                    marginBottom: "1rem",
+                    userSelect: "text",
+                    wordBreak: "break-word",
+                    whiteSpace: "normal",
+                    lineHeight: "3rem",
+                }}
                 ref={containerRef}
+                data-testid="container"
             >
-                {/* Скрытый текст для поиска */}
-                <Box
-                    sx={{
-                        position: "absolute",
-                        opacity: 0,
-                        pointerEvents: "none",
-                        whiteSpace: "nowrap",
-                        userSelect: "text",
-                        zIndex: -1,
-                    }}
-                >
-                    {sequence}
-                </Box>
-
-                {/* Видимый слой */}
-                <Grid
-                    container
-                    data-testid="container"
-                    sx={{ gap: "5px", userSelect: "text" }}
-                >
-                    {sequence.split("").map((acid, index) => (
-                        <Grid item key={index}>
-                            <Residue
-                                acid={acid}
-                                color={aminoColorMap.get(acid)}
-                            />
-                        </Grid>
-                    ))}
-                </Grid>
+                {sequence.split("").map((acid, index) => (
+                    // использую индекс, так как последовательность неизменяема
+                    <Residue
+                        key={index}
+                        acid={acid}
+                        color={aminoColorMap.get(acid)}
+                    />
+                ))}
             </Box>
             <Toast open={open} message={message} onClose={closeToast} />
         </>

@@ -1,38 +1,36 @@
-import { useEffect, RefObject } from "react";
+import React, { useEffect } from "react";
 
 export const useCopyOnSelect = (
-    containerRef: RefObject<HTMLElement>,
+    containerRef: React.RefObject<HTMLElement>,
     showToast: (msg: string) => void,
 ) => {
     useEffect(() => {
         const handleMouseUp = () => {
-            if (!containerRef.current) return;
-
             const selection = window.getSelection();
-            if (!selection) return;
+            if (!selection || !containerRef.current) return;
 
             const selectedText = selection.toString().trim();
+            if (!selectedText) return;
 
-            if (
-                selectedText &&
-                containerRef.current.contains(selection.anchorNode)
-            ) {
+            const range = selection.getRangeAt(0);
+            const isInside = containerRef.current.contains(
+                range.commonAncestorContainer,
+            );
+
+            if (isInside) {
                 navigator.clipboard
                     .writeText(selectedText)
-                    .then(() => {
-                        showToast("Выделенный текст скопирован!");
-                    })
-                    .catch(() => {
-                        showToast("Не удалось скопировать текст");
-                    });
+                    .then(() => showToast("Последовательность скопирована"))
+                    .catch(() =>
+                        showToast("Не удалось скопировать последовательность"),
+                    );
             }
         };
 
-        const current = containerRef.current;
-        current?.addEventListener("mouseup", handleMouseUp);
+        document.addEventListener("mouseup", handleMouseUp);
 
         return () => {
-            current?.removeEventListener("mouseup", handleMouseUp);
+            document.removeEventListener("mouseup", handleMouseUp);
         };
     }, [containerRef, showToast]);
 };
