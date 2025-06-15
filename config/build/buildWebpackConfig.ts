@@ -6,26 +6,26 @@ import { buildPlugins } from "./buildPlugins";
 import { buildDevServer } from "./buildDevServer";
 
 export function buildWebpackConfig(
-  options: BuildOptions,
+    options: BuildOptions,
 ): webpack.Configuration {
-  const { mode, paths, isDev } = options;
-  return {
-    mode: mode,
-    entry: paths.entry,
-    module: {
-      rules: buildLoaders(),
-    },
-    resolve: buildResolvers(paths),
+    const { mode, paths, isDev } = options;
+    return {
+        mode: mode,
+        entry: paths.entry,
+        module: {
+            rules: buildLoaders(),
+        },
+        resolve: buildResolvers(paths),
 
-    output: {
-      filename: "[name].[contenthash].js",
-      path: paths.build,
-      clean: true,
-    },
-    plugins: buildPlugins(options),
+        output: {
+            filename: "[name].[contenthash].js",
+            path: paths.build,
+            clean: true,
+            publicPath: isDev ? "/" : "/AcidAlign/",
+        },
+        plugins: buildPlugins(options),
 
-    // disabling source maps in production builds
-    devtool: isDev ? "inline-source-map" : undefined,
-    devServer: isDev ? buildDevServer(options) : undefined,
-  };
+        devtool: isDev ? "inline-source-map" : undefined,
+        devServer: isDev ? buildDevServer(options) : undefined,
+    };
 }
