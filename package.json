@@ -1,5 +1,5 @@
 {
-  "name": "Biocad Align",
+  "name": "acid-align",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -7,7 +7,7 @@
     "build:dev": "webpack --env mode=development",
     "start": "webpack serve --env port=5173",
     "unit": "jest --config ./config/jest/jest.config.ts",
-    "deploy": "gh-pages -d dist"
+    "deploy": "gh-pages -d build"
   },
   "keywords": [],
   "author": "Anton Mosov <themosov@gmail.com>",

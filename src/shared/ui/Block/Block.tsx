@@ -9,7 +9,7 @@ export function Block({ sx, ...other }: BlockProps) {
                 borderRadius: 2,
                 backgroundColor: "background.paper",
                 boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.06)",
-                p: 4,
+                p: { xs: 2, md: 4 },
                 ...sx,
             }}
             {...other}
