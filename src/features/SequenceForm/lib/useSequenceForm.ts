@@ -25,6 +25,13 @@ export const useSequenceForm = () => {
         setErrors({ ...errors, [e.target.name]: "" });
     };
 
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            handleSubmit(e);
+        }
+    };
+
     const validate = () => {
         const { seq1, seq2 } = formData;
         setSequenceData({ seq1: "", seq2: "" });
@@ -64,5 +71,6 @@ export const useSequenceForm = () => {
         inputRef2,
         handleChange,
         handleSubmit,
+        handleKeyDown,
     };
 };

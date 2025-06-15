@@ -33,6 +33,7 @@ export const CompareResidues = ({ seq1, seq2 }: CompareResiduesProps) => {
                 {seq2.split("").map((acid, index) => (
                     // использую индекс, так как последовательность неизменяема
                     <Residue
+                        key={index}
                         acid={acid}
                         color={
                             acid === seq1[index] ? "" : aminoColorMap.get(acid)

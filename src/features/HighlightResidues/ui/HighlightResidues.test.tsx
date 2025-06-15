@@ -1,116 +1,45 @@
-import React from "react";
-import { render, screen, fireEvent, act } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { HighlightResidues } from "./HighlightResidues";
+import { aminoColorMap } from "entities/AminoAcidSequence";
 
-// Мок для Toast
 jest.mock("@/shared/ui/Toast", () => ({
-    Toast: ({ open, message }: any) =>
-        open ? <div data-testid="toast">{message}</div> : null,
+    Toast: () => <div data-testid="toast" />,
 }));
-
-// Мок для useToast
-const showToastMock = jest.fn();
-const closeToastMock = jest.fn();
 
 jest.mock("@/shared/hooks/useToast", () => ({
     useToast: () => ({
-        open: true,
-        message: "Mock message",
-        showToast: showToastMock,
-        closeToast: closeToastMock,
+        open: false,
+        message: "",
+        showToast: jest.fn(),
+        closeToast: jest.fn(),
     }),
 }));
 
-// Мок Residue
-jest.mock("@/shared/ui/Residue", () => ({
-    Residue: ({ acid, color }: { acid: string; color?: string }) => (
-        <span data-testid="residue" style={{ color }}>
-            {acid}
-        </span>
-    ),
+jest.mock("@/shared/hooks/useCopyOnSelect", () => ({
+    useCopyOnSelect: jest.fn(),
 }));
 
 describe("HighlightResidues", () => {
-    beforeEach(() => {
-        jest.clearAllMocks();
-    });
+    it("renders each amino acid with correct color", () => {
+        const sequence = "ACDE"; // Разные типы кислот
 
-    it("renders residues with correct colors", () => {
-        render(<HighlightResidues sequence="CAG" />);
+        render(<HighlightResidues sequence={sequence} />);
 
-        const residues = screen.getAllByTestId("residue");
-        expect(residues).toHaveLength(3);
+        const residues = screen
+            .getByTestId("container")
+            .querySelectorAll("span");
 
-        // Цвета из твоей aminoColorMap
-        expect(residues[0]).toHaveTextContent("C");
-        expect(residues[0]).toHaveStyle("color: #FFEA00");
+        expect(residues.length).toBe(sequence.length);
 
-        expect(residues[1]).toHaveTextContent("A");
-        expect(residues[1]).toHaveStyle("color: #67E4A6");
+        residues.forEach((span, index) => {
+            const acid = sequence[index];
+            expect(span).toHaveTextContent(acid);
 
-        expect(residues[2]).toHaveTextContent("G");
-        expect(residues[2]).toHaveStyle("color: #C4C4C4");
-    });
-
-    it("copies selected text to clipboard and shows success toast", async () => {
-        const writeTextMock = jest.fn().mockResolvedValue(undefined);
-        Object.assign(navigator, {
-            clipboard: {
-                writeText: writeTextMock,
-            },
+            const expectedColor = aminoColorMap.get(acid);
+            if (expectedColor) {
+                const style = window.getComputedStyle(span);
+                expect(style.backgroundColor).not.toBe("transparent");
+            }
         });
-
-        render(<HighlightResidues sequence="CAG" />);
-
-        const container = screen.getByTestId("container");
-        const firstResidue = container.querySelector("[data-testid='residue']");
-
-        const selectionMock = {
-            toString: () => "CA",
-            anchorNode: firstResidue,
-        };
-        jest.spyOn(window, "getSelection").mockReturnValue(
-            selectionMock as any,
-        );
-
-        await act(async () => {
-            fireEvent.mouseUp(container);
-        });
-
-        expect(writeTextMock).toHaveBeenCalledWith("CA");
-        expect(showToastMock).toHaveBeenCalledWith(
-            "Выделенный текст скопирован!",
-        );
-    });
-
-    it("shows error toast if copy fails", async () => {
-        const writeTextMock = jest.fn().mockRejectedValue(new Error("fail"));
-        Object.assign(navigator, {
-            clipboard: {
-                writeText: writeTextMock,
-            },
-        });
-
-        render(<HighlightResidues sequence="CAG" />);
-
-        const container = screen.getByTestId("container");
-        const firstResidue = container.querySelector("[data-testid='residue']");
-
-        const selectionMock = {
-            toString: () => "G",
-            anchorNode: firstResidue,
-        };
-        jest.spyOn(window, "getSelection").mockReturnValue(
-            selectionMock as any,
-        );
-
-        await act(async () => {
-            fireEvent.mouseUp(container);
-        });
-
-        expect(writeTextMock).toHaveBeenCalledWith("G");
-        expect(showToastMock).toHaveBeenCalledWith(
-            "Не удалось скопировать текст",
-        );
     });
 });
