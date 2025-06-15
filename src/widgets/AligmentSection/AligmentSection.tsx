@@ -38,7 +38,11 @@ export const AligmentSection = () => {
                 </Text>
                 <CompareResidues seq1={seq1} seq2={seq2} />
             </Section>
-            <Tip sx={{ marginTop: "1rem" }} />
+            <Tip
+                sx={{ marginTop: "1rem" }}
+                message="для копирования последовательности просто
+            выделите ее мышью"
+            />
         </Block>
     );
 };
